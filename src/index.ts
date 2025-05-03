@@ -2,7 +2,7 @@ import express, { Application } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv'; 
-import routes from './routes/imagesRoutes';
+import routes from './routes/routes';
 
 dotenv.config(); // 👉 and call this early
 

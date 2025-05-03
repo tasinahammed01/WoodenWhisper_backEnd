@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Journals } from "../models/journalsModels"; // Assuming this is your Mongoose model
+import { Journals } from "../modules/journalsModules"; // Assuming this is your Mongoose model
 
 // Function to handle getting all images
 export const getJournals = async (_req: Request, res: Response) => {

@@ -1,3 +1,4 @@
+
 import { Router } from "express";
 import { getImages } from "../controller/imagesController";
 import { getJournals } from "../controller/journalsController";
