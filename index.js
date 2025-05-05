@@ -94,9 +94,30 @@ MongoClient.connect(MONGO_URI)
       }
     });
 
+    // GET a single journal by ID
+    app.get("/journals/:id", async (req, res) => {
+      const { id } = req.params;
+      const { ObjectId } = require("mongodb");
+
+      try {
+        const journal = await db
+          .collection("journalscollection")
+          .findOne({ _id: new ObjectId(id) });
+
+        if (!journal) {
+          return res.status(404).json({ error: "Journal not found" });
+        }
+
+        res.status(200).json(journal);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to fetch journal" });
+      }
+    });
+
     // Root route - returns all images (same as /images)
     app.get("/", (req, res) => {
-        res.status(200).send("Welcome to the Wooden Whisper API");
+      res.status(200).send("Welcome to the Wooden Whisper API");
     });
 
     // Start the server
