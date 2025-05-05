@@ -14,15 +14,13 @@ app.use(express.json());
 // MongoDB connection
 let db;
 
-MongoClient.connect(MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+MongoClient.connect(MONGO_URI)
   .then((client) => {
     console.log("MongoDB Connected");
-    db = client.db(); // Get the database instance
+    db = client.db("test"); // Explicitly use 'test' DB
 
-    // Routes
+    // === ROUTES ===
+
     // Get all images
     app.get("/images", async (req, res) => {
       try {
@@ -37,11 +35,42 @@ MongoClient.connect(MONGO_URI, {
       }
     });
 
+    // Create an image
+    app.post("/images", async (req, res) => {
+      try {
+        const imageData = req.body;
+        const result = await db
+          .collection("imagesCollections")
+          .insertOne(imageData);
+        res.status(201).json(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to create image" });
+      }
+    });
+
+    // GET /images/category/:categoryName
+    app.get("/images/category/:categoryName", async (req, res) => {
+      const categoryName = req.params.categoryName;
+
+      try {
+        const filteredImages = await db
+          .collection("imagesCollections")
+          .find({ category: categoryName })
+          .toArray();
+
+        res.status(200).json(filteredImages);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to fetch filtered images" });
+      }
+    });
+
     // Get all journals
     app.get("/journals", async (req, res) => {
       try {
         const journals = await db
-          .collection("journalscollection")
+          .collection("journalsCollection")
           .find()
           .toArray();
         res.status(200).json(journals);
@@ -51,7 +80,21 @@ MongoClient.connect(MONGO_URI, {
       }
     });
 
-    // Root route (same as images)
+    // Create a journal
+    app.post("/journals", async (req, res) => {
+      try {
+        const journalData = req.body;
+        const result = await db
+          .collection("journalsCollection")
+          .insertOne(journalData);
+        res.status(201).json(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to create journal" });
+      }
+    });
+
+    // Root route - returns all images (same as /images)
     app.get("/", async (req, res) => {
       try {
         const images = await db
@@ -65,6 +108,7 @@ MongoClient.connect(MONGO_URI, {
       }
     });
 
+    // Start the server
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => {
