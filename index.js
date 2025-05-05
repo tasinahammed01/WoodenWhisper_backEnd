@@ -86,6 +86,7 @@ MongoClient.connect(MONGO_URI)
         const journalData = req.body;
         const result = await db
           .collection("journalsCollection")
+
           .insertOne(journalData);
         res.status(201).json(result);
       } catch (error) {
@@ -101,7 +102,8 @@ MongoClient.connect(MONGO_URI)
 
       try {
         const journal = await db
-          .collection("journalscollection")
+          .collection("journalsCollection")
+
           .findOne({ _id: new ObjectId(id) });
 
         if (!journal) {
