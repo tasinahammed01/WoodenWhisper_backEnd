@@ -95,17 +95,8 @@ MongoClient.connect(MONGO_URI)
     });
 
     // Root route - returns all images (same as /images)
-    app.get("/", async (req, res) => {
-      try {
-        const images = await db
-          .collection("imagesCollections")
-          .find()
-          .toArray();
-        res.status(200).json(images);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Failed to fetch images" });
-      }
+    app.get("/", (req, res) => {
+        res.status(200).send("Welcome to the Wooden Whisper API");
     });
 
     // Start the server
