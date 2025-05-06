@@ -49,6 +49,28 @@ MongoClient.connect(MONGO_URI)
       }
     });
 
+    // GET a single images by ID
+    app.get("/images/:id", async (req, res) => {
+      const { id } = req.params;
+      const { ObjectId } = require("mongodb");
+
+      try {
+        const image = await db
+          .collection("imagesCollections")
+
+          .findOne({ _id: new ObjectId(id) });
+
+        if (!image) {
+          return res.status(404).json({ error: "Image not found" });
+        }
+
+        res.status(200).json(image);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to fetch image" });
+      }
+    });
+
     // GET /images/category/:categoryName
     app.get("/images/category/:categoryName", async (req, res) => {
       const categoryName = req.params.categoryName;
